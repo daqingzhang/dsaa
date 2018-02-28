@@ -2,30 +2,30 @@
 #include <stdlib.h>
 
 struct node {
-	int data;
-	struct node *previous;
-	struct node *next;
+	int d;
+	struct node *p;
+	struct node *n;
 };
 
 void init(struct node *l)
 {
-	l->data = 0;
-	l->previous = l;
-	l->next = l;
+	l->d = 0;
+	l->p = l;
+	l->n = l;
 }
 
 void show(struct node *n)
 {
 	printf("node[%p]: data = %x, previous = %p, next = %p\n",
-		n, n->data, n->previous, n->next);
+		n, n->d, n->p, n->n);
 }
 
-struct node *insert(struct node *p, struct node *n, struct node *node)
+struct node *insert(struct node *p, struct node *n, struct node *c)
 {
-	node->previous = p;
-	node->next = n;
-	p->next = node;
-	n->previous = node;
+	node->n = p->n;
+	p->n	= c;
+	node->p = n->p;
+	n->p	= c;
 
 	return p;
 }
