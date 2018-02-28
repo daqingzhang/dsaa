@@ -20,67 +20,86 @@ void show(struct node *n)
 		n, n->d, n->p, n->n);
 }
 
-struct node *insert(struct node *p, struct node *n, struct node *c)
+void insert(struct node *p, struct node *n, struct node *c)
 {
-	node->n = p->n;
-	p->n	= c;
-	node->p = n->p;
-	n->p	= c;
+	c->n = p->n;
+	p->n = c;
+	c->p = n->p;
+	n->p = c;
+}
 
-	return p;
+void delete(struct node *c)
+{
+	struct node *p = c->p;
+	struct node *n = c->n;
+
+	p->n = c->n;
+	n->p = c->p;
+
+	printf("delete node %p\n", c);
+	free(c);
+}
+
+void list(struct node *l)
+{
+	struct node *p = l;
+
+	do {
+		show(p);
+		p = p->n;
+	} while(p != l);
 }
 
 struct node *create(int cnt)
 {
 	int i;
-	struct node *head, *p, *n;
+	struct node *head, *p, *c;
 
-	head = (struct node *)malloc(cnt * sizeof(struct node));
-	if (!head) {
-		printf("malloc failed\n");
-		return NULL;
-	}
+	c = (struct node *)malloc(sizeof(struct node));
+	head = c;
 	init(head);
-//	head->data = cnt;
-
 	p = head;
-	n = head;
+	head->d = 0;
 
-	for(i = 0;i < cnt; i++) {
-		insert(p, p, n);
-		p = n;
-		n = n + 1;
+	for(i = 0;i < cnt - 1; i++) {
+		c = (struct node *)malloc(sizeof(struct node));
+		insert(p, p->n, c);
+		p = p->n;
+		p->d = i + 1;
 	}
-
-	n = head;
-	for(i = 0;i < cnt; i++)
-		show(n++);
-
+	printf("create %d node, head is %p\n", cnt, head);
 	return head;
 }
 
 void destroy(struct node *l)
 {
-	struct node *n = l;
+	struct node *p, *c;
 
-	while(l != NULL) {
-		l = l->next;
-		n->next = NULL;
-		printf("to free node %p\n", n);
-		free(n);
-		n = l;
-	}
+	p = l;
+	do {
+		c = p;
+		p = p->n;
+		printf("free node %p\n", c);
+		free(c);
+	} while (p != l);
 }
-
 
 int main(void)
 {
-	struct node *head;
+	struct node *head, *p, *c;
 
 	head = create(10);
-	head->data = 10;
+	list(head);
 
-	show(head);
+	c = head->n;
+	delete(c);
+	list(head);
+
+	c = create(1);
+	p = head->n;
+	insert(p, p->n, c);
+	list(head);
+
 	destroy(head);
 
 	return 0;
