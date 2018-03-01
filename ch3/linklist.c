@@ -1,26 +1,20 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <linklist.h>
 
-struct node {
-	int d;
-	struct node *p;
-	struct node *n;
-};
-
-void init(struct node *l)
+void ll_init(struct node *n)
 {
-	l->d = 0;
-	l->p = l;
-	l->n = l;
+	n->d = 0;
+	n->p = n;
+	n->n = n;
 }
 
-void show(struct node *n)
+void ll_show(struct node *n)
 {
-	printf("node[%p]: data = %x, previous = %p, next = %p\n",
+	ll_printf("node[%p]: data = %x, previous = %p, next = %p\n",
 		n, n->d, n->p, n->n);
 }
 
-void insert(struct node *p, struct node *n, struct node *c)
+void ll_insert(struct node *p, struct node *n, struct node *c)
 {
 	c->n = p->n;
 	p->n = c;
@@ -28,7 +22,7 @@ void insert(struct node *p, struct node *n, struct node *c)
 	n->p = c;
 }
 
-void delete(struct node *c)
+void ll_delete(struct node *c)
 {
 	struct node *p = c->p;
 	struct node *n = c->n;
@@ -36,42 +30,42 @@ void delete(struct node *c)
 	p->n = c->n;
 	n->p = c->p;
 
-	printf("delete node %p\n", c);
+	ll_debug("delete node %p\n", c);
 	free(c);
 }
 
-void list(struct node *l)
+void ll_list(struct node *l)
 {
 	struct node *p = l;
 
 	do {
-		show(p);
+		ll_show(p);
 		p = p->n;
 	} while(p != l);
 }
 
-struct node *create(int cnt)
+struct node *ll_create(int cnt)
 {
 	int i;
 	struct node *head, *p, *c;
 
 	c = (struct node *)malloc(sizeof(struct node));
 	head = c;
-	init(head);
+	ll_init(head);
 	p = head;
 	head->d = 0;
 
 	for(i = 0;i < cnt - 1; i++) {
 		c = (struct node *)malloc(sizeof(struct node));
-		insert(p, p->n, c);
+		ll_insert(p, p->n, c);
 		p = p->n;
 		p->d = i + 1;
 	}
-	printf("create %d node, head is %p\n", cnt, head);
+	ll_debug("create %d node, head is %p\n", cnt, head);
 	return head;
 }
 
-void destroy(struct node *l)
+void ll_destroy(struct node *l)
 {
 	struct node *p, *c;
 
@@ -79,29 +73,28 @@ void destroy(struct node *l)
 	do {
 		c = p;
 		p = p->n;
-		printf("free node %p\n", c);
+		ll_debug("free node %p\n", c);
 		free(c);
 	} while (p != l);
 }
 
-int main(void)
+int ll_test(void)
 {
 	struct node *head, *p, *c;
 
-	head = create(10);
-	list(head);
+	head = ll_create(10);
+	ll_list(head);
 
 	c = head->n;
-	delete(c);
-	list(head);
+	ll_delete(c);
+	ll_list(head);
 
-	c = create(1);
+	c = ll_create(1);
 	p = head->n;
-	insert(p, p->n, c);
-	list(head);
+	ll_insert(p, p->n, c);
+	ll_list(head);
 
-	destroy(head);
+	ll_destroy(head);
 
 	return 0;
 }
-
