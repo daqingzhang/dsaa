@@ -85,4 +85,5 @@ struct stack_ar *stkar_create(int bytes)
 
 int stkar_test(void)
 {
+	return 0;
 }
