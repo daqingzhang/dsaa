@@ -1,6 +1,7 @@
 #ifndef __STACK_LL_H__
 #define __STACK_LL_H__
 #include <debug.h>
+#include <linklist.h>
 
 #ifdef DEBUG
 #define stk_debug ioprintf
