@@ -1,13 +1,6 @@
 #ifndef __STACK_LL_H__
 #define __STACK_LL_H__
-#include <debug.h>
 #include <linklist.h>
-
-#ifdef DEBUG
-#define stk_debug ioprintf
-#else
-#define stk_debug do{}while(0)
-#endif
 
 struct stack_ll {
 	struct node *list;
@@ -16,14 +9,16 @@ struct stack_ll {
 	unsigned int size;
 };
 
-int  stkll_push(struct stack_ll *stk, int d);
-int  stkll_pop(struct stack_ll *stk, int *d);
-int  stkll_isempty(struct stack_ll *stk);
-void stkll_clear(struct stack_ll *stk);
-void stkll_top(struct stack_ll *stk, int *top);
-void stkll_destroy(struct stack_ll *stk);
-void stkll_debug(struct stack_ll *stk);
-struct stack_ll *stkll_create(int size);
+typedef struct stack_ll stack_t;
+
+int  stkll_push(stack_t *stk, int d);
+int  stkll_pop(stack_t *stk, int *d);
+int  stkll_isempty(stack_t *stk);
+void stkll_clear(stack_t *stk);
+void stkll_top(stack_t *stk, int *top);
+void stkll_destroy(stack_t *stk);
+void stkll_debug(stack_t *stk);
+stack_t *stkll_create(int size);
 
 int stkll_test(void);
 

@@ -4,4 +4,10 @@
 
 #define ioprintf printf
 
+#ifdef CONFIG_DEBUG
+#define DEBUG ioprintf
+#else
+#define DEBUG(...) do{}while(0)
+#endif
+
 #endif

@@ -3,36 +3,40 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define stk_top(stk) (*((int *)(stk->buf) + stk->top))
+#include <debug.h>
 
-int stkar_push(struct stack_ar *stk, int d)
+#define top_inc(stk)	(stk->top++)
+#define top_dec(stk)	(stk->top--)
+#define top_dat(stk)	(*((int *)(stk->buf) + stk->top))
+
+int stkar_push(stack_t *stk, int d)
 {
 	if (stk->top >= stk->size) {
-		stk_debug("stack is full\n");
+		DEBUG("stack is full\n");
 		return -1;
 	}
-	stk->top++;
-	stk_top(stk) = d;
+	top_inc(stk);
+	top_dat(stk) = d;
 	return 0;
 }
 
-int stkar_pop(struct stack_ar *stk, int *d)
+int stkar_pop(stack_t *stk, int *d)
 {
 	if (stkar_isempty(stk)) {
-		stk_debug("stack is empty\n");
+		DEBUG("stack is empty\n");
 		return -1;
 	}
 	if (d)
-		*d = stk_top(stk);
-	stk->top--;
+		*d = top_dat(stk);
+	top_dec(stk);
 }
 
-int stkar_isempty(struct stack_ar *stk)
+int stkar_isempty(stack_t *stk)
 {
 	return (stk->top < 0) ? 1 : 0;
 }
 
-void stkar_clear(struct stack_ar *stk)
+void stkar_clear(stack_t *stk)
 {
 	if (!stkar_isempty(stk)) {
 		stk->top = -1;
@@ -40,13 +44,13 @@ void stkar_clear(struct stack_ar *stk)
 	}
 }
 
-void stkar_top(struct stack_ar *stk, int *top)
+void stkar_top(stack_t *stk, int *top)
 {
 	if(top)
-		*top = stk_top(stk);
+		*top = top_dat(stk);
 }
 
-void stkar_destroy(struct stack_ar *stk)
+void stkar_destroy(stack_t *stk)
 {
 	void *pbuf = stk->buf;
 
@@ -54,36 +58,37 @@ void stkar_destroy(struct stack_ar *stk)
 	free(stk);
 }
 
-void stkar_debug(struct stack_ar *stk)
+void stkar_debug(stack_t *stk)
 {
-	stk_debug("stack: buf: %p, top: %d, size: %d\n",
+	DEBUG("stack: buf: %p, top: %d, size: %d\n",
 		stk->buf, stk->top, stk->size);
 }
 
-struct stack_ar *stkar_create(int bytes)
+static void stkar_init(stack_t *stk, void *buf, int len)
 {
-	struct stack_ar *stk;
+	stk->top = -1;
+	stk->buf = buf;
+	stk->size = len;
+}
+
+stack_t *stkar_create(int bytes)
+{
+	stack_t *stk;
 	void *pbuf;
 
-	stk = malloc(sizeof(struct stack_ar));
+	stk = malloc(sizeof(stack_t));
 	if (!stk) {
-		stk_debug("malloc stk failed\n");
+		DEBUG("malloc stk failed\n");
 		return NULL;
 	}
 
 	pbuf = malloc(sizeof(char) * bytes);
 	if (!pbuf) {
 		free(stk);
-		stk_debug("malloc pbuf failed\n");
+		DEBUG("malloc pbuf failed\n");
 		return NULL;
 	}
-
 	memset(pbuf, 0, bytes);
-	stk->buf = pbuf;
+	stkar_init(stk, pbuf, bytes);
 	return stk;
-}
-
-int stkar_test(void)
-{
-	return 0;
 }
